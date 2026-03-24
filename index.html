@@ -476,13 +476,25 @@
 <div id="survey-wrap">
 
   <!-- ══ 0: INTRO ══ -->
-  <div class="screen active" id="s0">
-    <div class="intro-title">En<em>Primax</em>,<br>Tu experiencia <br><em>importa<em>.<br></div>
+<div class="screen active" id="s0">
+    <div class="intro-title">En <em>Primax</em>,<br>Tu experiencia <br><em>importa</em>.<br></div>
     <div class="intro-divider"></div>
-    <div class="intro-desc">Queremos mejorar tu experiencia en nuestras estaciones. ¡Completa esta encuesta y participa por una Giftcard de S/250!</div>
+    <div class="intro-desc">Queremos mejorar tu experiencia en nuestras estaciones. ¡Completa esta encuesta y participa por una Giftcard de S/250!</div>    
+    <div class="user-data-form" style="margin: 20px 0; display: flex; flex-direction: column; gap: 12px;">
+    <div class="intro-desc">Por favor, bríndanos tus datos aquí:</div>    
+
+      <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">      
+      <input type="text" id="dni" name="dni" placeholder="Número de DNI" maxlength="8" pattern="\d{8}" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">      
+      <input type="tel" id="celular" name="celular" placeholder="Número de celular" maxlength="9" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+      <input type="email" id="email" name="email" placeholder="Correo electrónico" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+    </div>
+
     <div class="cta-wrap">
-      
-      <button class="btn-next" onclick="go(1)">Comenzar <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="btn-next" onclick="go(1)">Comenzar 
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
   </div>
 
@@ -799,7 +811,7 @@
   let currentScreen = 0;
   let patternChoice = null;
   const answers = {};
-  const LABELS = ['Inicio','Exp. General','A. Trato','B. Protocolo','C & D. Seguridad','E. Servicios','Patrón de Visita','Consistencia','—','¡Gracias!'];
+  const LABELS = ['Inicio','Nombre','DNI','Celular','Email','Exp. General','A. Trato','B. Protocolo','C & D. Seguridad','E. Servicios','Patrón de Visita','Consistencia','—','¡Gracias!'];
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzam8C2VH_gmspFBDZvD96vRTiXgA2Ej9XimlxJJHDFbij7HmJS0oPnTPDLsS_cvuhZxg/exec";
 
 
@@ -816,16 +828,66 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzam8C2VH_gmspFBDZvD
     reader.readAsDataURL(input.files[0]);
   }
 
-  function go(n) {
-    const cur = document.getElementById('s' + currentScreen);
-    if (cur) cur.classList.remove('active');
-    currentScreen = n;
-    const next = document.getElementById('s' + n);
-    if (next) next.classList.add('active');
-    updateProgress();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+function go(n) {
+  // Solo validamos si el usuario intenta AVANZAR (n > currentScreen)
+  if (n > currentScreen) {
+    if (!validateCurrentStep()) {
+      alert("Por favor, selecciona una opción para continuar.");
+      return;
+    }
   }
 
+  const cur = document.getElementById('s' + currentScreen);
+  if (cur) cur.classList.remove('active');
+  
+  currentScreen = n;
+  const next = document.getElementById('s' + n);
+  if (next) next.classList.add('active');
+  
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function validateCurrentStep() {
+  switch (currentScreen) {
+    case 0: // Pantalla de datos personales
+      const nom = document.getElementById('nombre').value.trim();
+      const dni = document.getElementById('dni').value.trim();
+      const cel = document.getElementById('celular').value.trim();
+      const mail = document.getElementById('email').value.trim();
+      return (nom !== "" && dni.length >= 8 && cel.length >= 9 && mail.includes('@'));
+
+    case 1: // Experiencia General
+      return !!answers['scale-general'];
+
+    case 2: // Trato (Amabilidad y Disposición)
+      return (!!answers['es-amabilidad'] && !!answers['es-disposicion']);
+
+    case 3: // Protocolo (4 sub-items)
+      return (!!answers['es-saludo'] && !!answers['es-atencion'] && 
+              !!answers['es-despedida'] && !!answers['es-imagen']);
+
+    case 4: // Seguridad y Eficiencia (4 sub-items)
+      return (!!answers['es-confianza'] && !!answers['es-seguridad'] && 
+              !!answers['es-fluidez'] && !!answers['es-disponib']);
+
+    case 5: // Servicios adicionales (3 sub-items con opción NA)
+      // Aquí validamos que hayan marcado algo O que hayan marcado el botón NA
+      return (!!answers['es-disp-serv'] && !!answers['es-calidad-serv'] && !!answers['es-banos']);
+
+    case 6: // Patrón de carga
+      return !!answers['patron'];
+
+    case '7a': // Consistencia
+      return !!answers['ws-consistencia'] && !!answers['yn-dif'];
+
+    case '7b': // Similaridad
+      return !!answers['ws-similar'] && !!answers['yn-mejor'];
+
+    default:
+      return true;
+  }
+}
   function updateProgress() {
     const idx = (typeof currentScreen === 'number') ? currentScreen : 6;
     const pct = Math.round((idx / TOTAL) * 100);
@@ -915,37 +977,35 @@ function toggleNA(groupId, naId) {
   });
 function buildPayload() {
   return {
-    exp_general: answers['scale-general'] || "",
+    // Captura directa de los inputs de texto del inicio
+    nombre: document.getElementById('nombre').value.trim(),
+    dni: document.getElementById('dni').value.trim(),
+    celular: document.getElementById('celular').value.trim(),
+    email: document.getElementById('email').value.trim(),
 
+    // Captura de las escalas (estas sí están en el objeto answers)
+    exp_general: answers['scale-general'] || "",
     amabilidad: answers['es-amabilidad'] || "",
     disposicion: answers['es-disposicion'] || "",
-
     saludo: answers['es-saludo'] || "",
     atencion: answers['es-atencion'] || "",
     despedida: answers['es-despedida'] || "",
     imagen: answers['es-imagen'] || "",
-
     confianza: answers['es-confianza'] || "",
     seguridad: answers['es-seguridad'] || "",
     fluidez: answers['es-fluidez'] || "",
     disponibilidad_colaborador: answers['es-disponib'] || "",
-
     disp_servicios: answers['es-disp-serv'] || "",
     calidad_servicios: answers['es-calidad-serv'] || "",
     banos: answers['es-banos'] || "",
-
     patron: answers['patron'] || "",
-
     consistencia: answers['ws-consistencia'] || "",
     nota_diferencias: document.getElementById('txt-7a')?.value?.trim() || "",
-
     similaridad: answers['ws-similar'] || "",
     estaciones_mejores: document.getElementById('txt-7b')?.value?.trim() || "",
-
     comentarios_adicionales: document.getElementById('comentarios-adicionales')?.value?.trim() || ""
   };
 }
-
 async function submitSurvey() {
   const payload = buildPayload();
 
