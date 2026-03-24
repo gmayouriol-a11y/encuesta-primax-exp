@@ -477,26 +477,45 @@
 
   <!-- ══ 0: INTRO ══ -->
 <div class="screen active" id="s0">
-    <div class="intro-title">En <em>Primax</em>,<br>Tu experiencia <br><em>importa</em>.<br></div>
+    <div class="intro-title">En <em>Primax</em>,<br>Tu experiencia <br><em>importa</em>.</div>
     <div class="intro-divider"></div>
     <div class="intro-desc">Queremos mejorar tu experiencia en nuestras estaciones. ¡Completa esta encuesta y participa por una Giftcard de S/250!</div>    
+    
     <div class="user-data-form" style="margin: 20px 0; display: flex; flex-direction: column; gap: 12px;">
-    <div class="intro-desc">Por favor, bríndanos tus datos aquí:</div>    
+        <div class="intro-desc">Por favor, bríndanos tus datos aquí:</div>    
 
-      <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">      
-      <input type="text" id="dni" name="dni" placeholder="Número de DNI" maxlength="8" pattern="\d{8}" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">      
-      <input type="tel" id="celular" name="celular" placeholder="Número de celular" maxlength="9" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
-      <input type="email" id="email" name="email" placeholder="Correo electrónico" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">      
+        <input type="text" id="dni" name="dni" placeholder="Número de DNI" maxlength="8" pattern="\d{8}" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">      
+        <input type="tel" id="celular" name="celular" placeholder="Número de celular" maxlength="9" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="email" id="email" name="email" placeholder="Correo electrónico" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        
+        <div class="intro-desc" style="font-size: 0.9em; margin-top: 10px; color: #555;">
+            Por favor marque los dos casilleros para confirmar su autorización de datos y el conocimiento de los términos y condiciones del sorteo.
+        </div>
+
+        <div class="terms-container" style="display: flex; flex-direction: column; gap: 10px; text-align: left; font-size: 0.85em;">
+            <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+                <input type="checkbox" id="check-datos" required style="margin-top: 3px;">
+                <span>Autorizo el uso de mis datos personales según la 
+                    <a href="https://primax.com.pe/wp-content/uploads/2023/02/Politica-de-Privacidad-y-Uso-de-Cookies-de-los-canales-de-atencion-al-cliente.pdf" target="_blank" style="color: #0056b3; text-decoration: underline;">Política de Privacidad</a>.
+                </span>
+            </label>
+            <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+                <input type="checkbox" id="check-terminos" required style="margin-top: 3px;">
+                <span>Acepto los <a href="https://docs.google.com/document/d/1LGtWs-e0enM1Zt2IhBd0-5tE31EMZFVHvvA2_LUWwQo/edit?usp=sharing" target="_blank" style="color: #0056b3; text-decoration: underline;">términos y condiciones</a> del sorteo de la Giftcard de S/250.</span>
+            </label>
+        </div>
     </div>
 
     <div class="cta-wrap">
-      <button class="btn-next" onclick="go(1)">Comenzar 
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
+        <button class="btn-next" onclick="validarYContinuar()">Comenzar 
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
     </div>
-  </div>
+</div>
+
 
   <!-- ══ 1: EXP GENERAL ══ -->
   <div class="screen" id="s1">
@@ -794,13 +813,8 @@
 
   <!-- ══ 9: GRACIAS ══ -->
   <div class="screen" id="s9">
-    <div class="ty-icon">🙌</div>
-    <div class="ty-title">¡Gracias por<br>compartir su<br><em style="font-style:normal;color:var(--orange)">opinión!</em></div>
+    <div class="ty-title">¡Gracias por<br>compartir tu<br><em style="font-style:normal;color:var(--orange)">opinión!</em></div>
     <div class="intro-divider"></div>
-    <div class="ty-sub">Su feedback es fundamental para que Primax siga mejorando la experiencia en cada visita. ¡Nos vemos pronto en nuestra estación de servicio!</div>
-    <div class="ty-badge">
-      <span class="big-emoji">⛽</span>
-      <span>Primax — Siempre en movimiento.<br>Tu confianza, nuestro combustible.</span>
     </div>
   </div>
 
@@ -888,6 +902,19 @@ function validateCurrentStep() {
       return true;
   }
 }
+
+function validarYContinuar() {
+    const checkDatos = document.getElementById('check-datos').checked;
+    const checkTerminos = document.getElementById('check-terminos').checked;
+    const nombre = document.getElementById('nombre').value;
+
+    if (nombre && checkDatos && checkTerminos) {
+        go(1);
+    } else {
+        alert("Por favor, complete sus datos y acepte ambos casilleros para continuar.");
+    }
+}
+
   function updateProgress() {
     const idx = (typeof currentScreen === 'number') ? currentScreen : 6;
     const pct = Math.round((idx / TOTAL) * 100);
