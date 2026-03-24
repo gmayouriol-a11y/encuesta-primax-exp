@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Encuesta de Experiencia – Primax</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange:       #FF6200;
+    --orange-light: #FF8438;
+    --orange-dark:  #C94A00;
+    --orange-pale:  #FFF3EC;
+    --orange-mid:   #FFD8BE;
+    --bg:           #FAFAF9;
+    --surface:      #FFFFFF;
+    --surface2:     #F5F0EC;
+    --border:       #EAE3DC;
+    --border-strong:#D4C9BE;
+    --text:         #1A1209;
+    --text-mid:     #6B5C4E;
+    --text-soft:    #9E8D7E;
+    --shadow-sm:    0 1px 4px rgba(100,60,20,0.06), 0 4px 12px rgba(100,60,20,0.05);
+    --shadow-md:    0 4px 16px rgba(100,60,20,0.10), 0 1px 4px rgba(100,60,20,0.06);
+    --shadow-lg:    0 12px 40px rgba(255,98,0,0.18), 0 2px 8px rgba(255,98,0,0.10);
+    --radius:       18px;
+    --nav-h:        64px;
+    --progress-h:   4px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,98,0,0.045) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── PROGRESS (below) ── */
+  #progress-bar-wrap {
+    position: fixed;
+    top: var(--nav-h);
+    left: 0; right: 0;
+    height: var(--progress-h);
+    background: rgba(255,255,255,0.3);
+    z-index: 100;
+  }
+  #progress-fill {
+    height: 100%;
+    background: rgba(255,255,255,0.85);
+    width: 0%;
+    transition: width 0.55s cubic-bezier(.4,0,.2,1);
+    border-radius: 0 3px 3px 0;
+  }
+
+  /* ── ORANGE NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--nav-h);
+    background: var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    z-index: 99;
+    box-shadow: 0 2px 16px rgba(255,98,0,0.35);
+  }
+
+/* Logo slot */
+ .logo-slot {
+   height: 36px;
+   display: flex;
+   align-items: center;
+   gap: 12px;
+ }
+
+ /* Esta es la nueva regla que controla tu logo de Primax */
+ .primax-logo-img {
+   height: 32px;      /* Esto hace que deje de ser gigante */
+   width: auto;       /* Mantiene la forma original sin deformar */
+   display: block;
+   image-rendering: -webkit-optimize-contrast; /* Para que se vea súper nítido */
+ }
+
+  .step-pill {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.85);
+    font-weight: 500;
+    padding: 6px 14px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.3);
+    white-space: nowrap;
+  }
+
+  /* ── WRAP ── */
+  #survey-wrap {
+    max-width: 660px;
+    margin: 0 auto;
+    padding: calc(var(--nav-h) + var(--progress-h) + 48px) 24px 80px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; }
+  .screen.active {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    animation: fadeUp 0.42s cubic-bezier(.4,0,.2,1) forwards;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── LABEL ── */
+  .q-label {
+    font-size: 10.5px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--orange);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .q-label::before {
+    content: '';
+    display: inline-block;
+    width: 14px; height: 2.5px;
+    background: var(--orange);
+    border-radius: 2px;
+  }
+
+  /* ── TITLES ── */
+  .q-title {
+    font-family: 'Clash Display', sans-serif;
+    font-size: clamp(26px, 4.5vw, 40px);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--text);
+    letter-spacing: -0.8px;
+  }
+  .q-title em { font-style: normal; color: var(--orange); }
+  .q-sub {
+    font-size: 15px;
+    color: var(--text-mid);
+    line-height: 1.65;
+    font-weight: 300;
+    margin-top: -10px;
+  }
+
+  /* ── BIG SCALE (intro + general) ── */
+  .scale-row { display: flex; gap: 8px; }
+  .scale-btn {
+    flex: 1;
+    padding: 16px 6px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface);
+    color: var(--text);
+    font-family: 'Clash Display', sans-serif;
+    cursor: pointer;
+    transition: all 0.17s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    box-shadow: var(--shadow-sm);
+  }
+  .scale-btn .scale-emoji { font-size: 22px; }
+  .scale-btn .scale-num   { font-size: 15px; font-weight: 700; }
+  .scale-btn .scale-word  { font-size: 8.5px; letter-spacing: 0.8px; color: var(--text-soft); text-transform: uppercase; }
+  .scale-btn:hover {
+    border-color: var(--orange);
+    background: var(--orange-pale);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+  .scale-btn.selected {
+    border-color: var(--orange);
+    background: var(--orange);
+    color: #fff;
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+  .scale-btn.selected .scale-word { color: rgba(255,255,255,0.7); }
+  .scale-label-row {
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--text-soft);
+    text-transform: uppercase;
+  }
+
+  /* ── SECTION CARD ── */
+  .section-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 22px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .section-title {
+    font-family: 'Clash Display', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--orange-dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-title .icon {
+    width: 30px; height: 30px;
+    background: var(--orange-pale);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    border: 1px solid var(--orange-mid);
+  }
+  .sub-item { display: flex; flex-direction: column; gap: 8px; }
+  .sub-item-label { font-size: 13.5px; color: var(--text-mid); font-weight: 400; }
+
+  /* ── EMOJI MINI SCALE (5 botones con emoji+num+palabra) ── */
+  .emoji-scale { display: flex; gap: 6px; }
+  .emoji-btn {
+    flex: 1;
+    padding: 10px 4px 9px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface2);
+    color: var(--text);
+    font-family: 'Clash Display', sans-serif;
+    cursor: pointer;
+    transition: all 0.14s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+  .emoji-btn .eb-emoji { font-size: 16px; line-height: 1; }
+  .emoji-btn .eb-num   { font-size: 12px; font-weight: 700; }
+  .emoji-btn .eb-word  { font-size: 7.5px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-soft); text-align: center; line-height: 1.2; }
+  .emoji-btn:hover { border-color: var(--orange); background: var(--orange-pale); }
+  .emoji-btn.selected {
+    border-color: var(--orange);
+    background: var(--orange);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(255,98,0,0.28);
+  }
+  .emoji-btn.selected .eb-word { color: rgba(255,255,255,0.75); }
+
+  /* ── N/A ── */
+  .na-btn {
+    align-self: flex-start;
+    padding: 5px 13px;
+    border: 1.5px dashed var(--border-strong);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-soft);
+    font-size: 10.5px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.14s;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+  }
+  .na-btn:hover { border-color: var(--text-mid); color: var(--text-mid); }
+  .na-btn.selected { border-color: var(--text-mid); color: var(--text); background: var(--surface2); }
+
+  /* ── CHOICES ── */
+  .choice-list { display: flex; flex-direction: column; gap: 10px; }
+  .choice-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.17s ease;
+    background: var(--surface);
+    text-align: left;
+    width: 100%;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    box-shadow: var(--shadow-sm);
+  }
+  .choice-item .choice-num {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border-strong);
+    background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Clash Display', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-mid);
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .choice-item:hover { border-color: var(--orange); background: var(--orange-pale); transform: translateX(5px); box-shadow: var(--shadow-md); }
+  .choice-item.selected { border-color: var(--orange); background: var(--orange-pale); box-shadow: 0 0 0 3px rgba(255,98,0,0.10); }
+  .choice-item.selected .choice-num { background: var(--orange); border-color: var(--orange); color: #fff; }
+
+  /* ── YES/NO ── */
+  .yesno-row { display: flex; gap: 12px; }
+  .yn-btn {
+    flex: 1; padding: 16px;
+    border-radius: 14px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-family: 'Clash Display', sans-serif;
+    font-size: 17px; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.17s ease;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    box-shadow: var(--shadow-sm);
+  }
+  .yn-btn .yn-emoji { font-size: 26px; }
+  .yn-btn:hover { border-color: var(--orange); background: var(--orange-pale); box-shadow: var(--shadow-md); }
+  .yn-btn.selected { border-color: var(--orange); background: var(--orange); color: #fff; box-shadow: var(--shadow-lg); }
+
+  /* ── TEXTAREA ── */
+  .open-field {
+    width: 100%; padding: 16px 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 300;
+    resize: none; min-height: 120px;
+    transition: border-color 0.17s, box-shadow 0.17s;
+    outline: none;
+    box-shadow: var(--shadow-sm);
+  }
+  .open-field::placeholder { color: var(--text-soft); }
+  .open-field:focus { border-color: var(--orange); box-shadow: 0 0 0 4px rgba(255,98,0,0.08); }
+
+  /* ── WORD SCALE (consistencia/similitud) ── */
+  .word-scale { display: flex; gap: 7px; }
+  .word-btn {
+    flex: 1; padding: 12px 5px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    cursor: pointer;
+    transition: all 0.14s;
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    box-shadow: var(--shadow-sm);
+  }
+  .word-btn .wn { font-family: 'Clash Display', sans-serif; font-size: 18px; font-weight: 700; color: var(--text); }
+  .word-btn .wl { font-size: 8px; letter-spacing: 0.4px; text-transform: uppercase; color: var(--text-soft); text-align: center; line-height: 1.3; }
+  .word-btn:hover { border-color: var(--orange); background: var(--orange-pale); }
+  .word-btn.selected { border-color: var(--orange); background: var(--orange); }
+  .word-btn.selected .wn { color: #fff; }
+  .word-btn.selected .wl { color: rgba(255,255,255,0.65); }
+
+  /* ── CONDITIONAL ── */
+  .cond-block {
+    display: none; flex-direction: column; gap: 14px;
+    padding: 18px 20px;
+    border-left: 3px solid var(--orange);
+    background: var(--orange-pale);
+    border-radius: 0 14px 14px 0;
+    animation: fadeUp 0.3s ease forwards;
+  }
+  .cond-block.visible { display: flex; }
+
+  /* ── BUTTONS ── */
+  .cta-wrap { display: flex; gap: 12px; align-items: center; padding-top: 4px; }
+  .btn-next {
+    padding: 15px 34px;
+    background: var(--orange); color: #fff;
+    border: none; border-radius: 12px;
+    font-family: 'Clash Display', sans-serif;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.17s ease;
+    display: flex; align-items: center; gap: 8px;
+    box-shadow: 0 4px 16px rgba(255,98,0,0.3);
+  }
+  .btn-next:hover { background: var(--orange-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,98,0,0.38); }
+  .btn-next:hover svg { transform: translateX(4px); }
+  .btn-next svg { transition: transform 0.15s; }
+  .btn-back {
+    padding: 15px 18px;
+    background: transparent; color: var(--text-mid);
+    border: 1.5px solid var(--border); border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all 0.14s;
+  }
+  .btn-back:hover { color: var(--text); border-color: var(--border-strong); background: var(--surface2); }
+
+  /* ── INTRO ── */
+  .intro-title {
+    font-family: 'Clash Display', sans-serif;
+    font-size: clamp(36px, 7vw, 58px);
+    font-weight: 700; line-height: 1.0;
+    letter-spacing: -1.5px; color: var(--text);
+  }
+  .intro-title em { font-style: normal; color: var(--orange); }
+  .intro-desc { font-size: 16px; color: var(--text-mid); line-height: 1.7; font-weight: 300; max-width: 500px; }
+  .intro-divider { width: 44px; height: 3px; background: var(--orange); border-radius: 2px; margin: 2px 0; }
+
+  /* ── THANK YOU ── */
+  .ty-icon {
+    width: 72px; height: 72px; background: var(--orange); border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; box-shadow: var(--shadow-lg);
+  }
+  .ty-title { font-family: 'Clash Display', sans-serif; font-size: clamp(34px,5.5vw,50px); font-weight: 700; line-height: 1.1; letter-spacing: -1px; }
+  .ty-sub { font-size: 16px; color: var(--text-mid); line-height: 1.7; font-weight: 300; max-width: 480px; }
+  .ty-badge {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 16px 22px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; box-shadow: var(--shadow-sm);
+    font-size: 13px; color: var(--text-mid); line-height: 1.5;
+  }
+  .ty-badge .big-emoji { font-size: 38px; }
+
+  @media (max-width: 500px) {
+    nav { padding: 0 16px; }
+    #survey-wrap { padding-top: calc(var(--nav-h) + var(--progress-h) + 32px); padding-left: 16px; padding-right: 16px; }
+    .scale-row { gap: 5px; }
+    .scale-btn { padding: 12px 4px 10px; }
+    .word-scale { gap: 4px; }
+    .emoji-scale { gap: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo-slot">
+    <img src="https://primaxleed.com.pe/img/slider/logoprimax.png
+  " alt="Logo Primax" class="primax-logo-img">
+  </div>
+  <div class="step-pill" id="step-label">Encuesta de Experiencia</div>
+</nav>
+  
+<div id="progress-bar-wrap"><div id="progress-fill"></div></div>
+
+<div id="survey-wrap">
+
+  <!-- ══ 0: INTRO ══ -->
+  <div class="screen active" id="s0">
+    <div class="intro-title">En<em>Primax</em>,<br>Tu experiencia <br><em>importa<em>.<br></div>
+    <div class="intro-divider"></div>
+    <div class="intro-desc">Queremos mejorar tu experiencia en nuestras estaciones. ¡Completa esta encuesta y participa por una Giftcard de S/250!</div>
+    <div class="cta-wrap">
+      
+      <button class="btn-next" onclick="go(1)">Comenzar <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ══ 1: EXP GENERAL ══ -->
+  <div class="screen" id="s1">
+    <div class="q-title">¿Cómo calificaría su <em>última visita</em> a Primax?</div>
+    <div class="q-sub">Considerando su experiencia completa en la estación de servicio.</div>
+    <div class="scale-row" id="scale-general">
+      <button class="scale-btn" onclick="selectScale('scale-general',this,1)"><span class="scale-emoji">😤</span><span class="scale-num">1</span><span class="scale-word">Muy mala</span></button>
+      <button class="scale-btn" onclick="selectScale('scale-general',this,2)"><span class="scale-emoji">😕</span><span class="scale-num">2</span><span class="scale-word">Mala</span></button>
+      <button class="scale-btn" onclick="selectScale('scale-general',this,3)"><span class="scale-emoji">😐</span><span class="scale-num">3</span><span class="scale-word">Regular</span></button>
+      <button class="scale-btn" onclick="selectScale('scale-general',this,4)"><span class="scale-emoji">😊</span><span class="scale-num">4</span><span class="scale-word">Buena</span></button>
+      <button class="scale-btn" onclick="selectScale('scale-general',this,5)"><span class="scale-emoji">🤩</span><span class="scale-num">5</span><span class="scale-word">Excelente</span></button>
+    </div>
+    <div class="cta-wrap">
+      <button class="btn-back" onclick="go(0)">← Atrás</button>
+      <button class="btn-next" onclick="go(2)">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ══ 2: TRATO ══ -->
+  <div class="screen" id="s2">
+    <div class="q-title">¿Cómo fue el <em>trato</em> del colaborador que le atendió?</div>
+    <div class="section-card">
+      <div class="section-title"><span class="icon">🤝</span>Trato del colaborador</div>
+      <div class="sub-item">
+        <div class="sub-item-label">Amabilidad del colaborador</div>
+        <div class="emoji-scale" id="es-amabilidad">
+          <button class="emoji-btn" onclick="selectEmoji('es-amabilidad',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-amabilidad',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-amabilidad',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-amabilidad',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Buena</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-amabilidad',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excelente</span></button>
+        </div>
+      </div>
+      <div class="sub-item">
+        <div class="sub-item-label">Disposición para ayudar</div>
+        <div class="emoji-scale" id="es-disposicion">
+          <button class="emoji-btn" onclick="selectEmoji('es-disposicion',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-disposicion',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-disposicion',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-disposicion',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Buena</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-disposicion',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excelente</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="cta-wrap">
+      <button class="btn-back" onclick="go(1)">← Atrás</button>
+      <button class="btn-next" onclick="go(3)">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ══ 3: PROTOCOLO ══ -->
+  <div class="screen" id="s3">
+    <div class="q-title">Evalúe nuestro <em>protocolo</em> de atención</div>
+    <div class="section-card">
+      <div class="section-title"><span class="icon">📋</span>Protocolo</div>
+      <div class="sub-item">
+        <div class="sub-item-label">Saludo al iniciar ("Bienvenido a Primax")</div>
+        <div class="emoji-scale" id="es-saludo">
+          <button class="emoji-btn" onclick="selectEmoji('es-saludo',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-saludo',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-saludo',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-saludo',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Buena</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-saludo',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excelente</span></button>
+        </div>
+      </div>
+      <div class="sub-item">
+        <div class="sub-item-label">Atención (motor apagado, marcador en cero, ofrece promoción o campañas)</div>
+        <div class="emoji-scale" id="es-atencion">
+          <button class="emoji-btn" onclick="selectEmoji('es-atencion',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-atencion',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-atencion',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-atencion',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Buena</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-atencion',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excelente</span></button>
+        </div>
+      </div>
+      <div class="sub-item">
+        <div class="sub-item-label">Despedida (Tipo de recibo, medio de pago, "Gracias por venir a Primax")</div>
+        <div class="emoji-scale" id="es-despedida">
+          <button class="emoji-btn" onclick="selectEmoji('es-despedida',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-despedida',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-despedida',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-despedida',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Buena</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-despedida',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excelente</span></button>
+        </div>
+      </div>
+      <div class="sub-item">
+        <div class="sub-item-label">Imagen del colaborador</div>
+        <div class="emoji-scale" id="es-imagen">
+          <button class="emoji-btn" onclick="selectEmoji('es-imagen',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-imagen',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-imagen',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-imagen',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Buena</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-imagen',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excelente</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="cta-wrap">
+      <button class="btn-back" onclick="go(2)">← Atrás</button>
+      <button class="btn-next" onclick="go(4)">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ══ 4: SEGURIDAD + EFICIENCIA ══ -->
+  <div class="screen" id="s4">
+    <div class="q-title"><em>Seguridad</em> y <em>eficiencia</em> del servicio</div>
+    <div class="section-card">
+      <div class="section-title"><span class="icon">🛡️</span>Seguridad y Confianza</div>
+      <div class="sub-item">
+        <div class="sub-item-label">Confianza en el proceso de carga</div>
+        <div class="emoji-scale" id="es-confianza">
+          <button class="emoji-btn" onclick="selectEmoji('es-confianza',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-confianza',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-confianza',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-confianza',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Buena</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-confianza',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excelente</span></button>
+        </div>
+      </div>
+      <div class="sub-item">
+        <div class="sub-item-label">Sensación de seguridad durante la atención</div>
+        <div class="emoji-scale" id="es-seguridad">
+          <button class="emoji-btn" onclick="selectEmoji('es-seguridad',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-seguridad',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-seguridad',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-seguridad',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Buena</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-seguridad',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excelente</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-title"><span class="icon">⚡</span>Eficiencia del Servicio</div>
+      <div class="sub-item">
+        <div class="sub-item-label">Fluidez del servicio (sin esperas innecesarias)</div>
+        <div class="emoji-scale" id="es-fluidez">
+          <button class="emoji-btn" onclick="selectEmoji('es-fluidez',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-fluidez',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-fluidez',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-fluidez',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Buena</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-fluidez',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excelente</span></button>
+        </div>
+      </div>
+      <div class="sub-item">
+        <div class="sub-item-label">Disponibilidad del colaborador en la estación</div>
+        <div class="emoji-scale" id="es-disponib">
+          <button class="emoji-btn" onclick="selectEmoji('es-disponib',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-disponib',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-disponib',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-disponib',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Buena</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-disponib',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excelente</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="cta-wrap">
+      <button class="btn-back" onclick="go(3)">← Atrás</button>
+      <button class="btn-next" onclick="go(5)">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ══ 5: SERVICIOS COMP ══ -->
+  <div class="screen" id="s5">
+    <div class="q-title">¿Cómo valora los <em>servicios adicionales</em> que brinda Primax?</div>
+    <div class="q-sub">Si no usó algún servicio, marca "No aplica".</div>
+    <div class="section-card">
+      <div class="section-title"><span class="icon">🔧</span>Servicios adicionales</div>
+      <div class="sub-item">
+        <div class="sub-item-label">Disponibilidad de servicios (aire, lavado, aceite, llantas…)</div>
+        <div class="emoji-scale" id="es-disp-serv">
+          <button class="emoji-btn" onclick="selectEmoji('es-disp-serv',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-disp-serv',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-disp-serv',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-disp-serv',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Buena</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-disp-serv',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excelente</span></button>
+        </div>
+        <button class="na-btn" id="na-disp-serv" onclick="toggleNA('es-disp-serv','na-disp-serv')">No aplica</button>
+      </div>
+      <div class="sub-item">
+        <div class="sub-item-label">Calidad de estos servicios</div>
+        <div class="emoji-scale" id="es-calidad-serv">
+          <button class="emoji-btn" onclick="selectEmoji('es-calidad-serv',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-calidad-serv',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-calidad-serv',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-calidad-serv',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Buena</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-calidad-serv',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excelente</span></button>
+        </div>
+        <button class="na-btn" id="na-calidad-serv" onclick="toggleNA('es-calidad-serv','na-calidad-serv')">No aplica</button>
+      </div>
+      <div class="sub-item">
+        <div class="sub-item-label">Baños</div>
+        <div class="emoji-scale" id="es-banos">
+          <button class="emoji-btn" onclick="selectEmoji('es-banos',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-banos',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Mala</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-banos',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-banos',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Buena</span></button>
+          <button class="emoji-btn" onclick="selectEmoji('es-banos',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excelente</span></button>
+        </div>
+        <button class="na-btn" id="na-banos" onclick="toggleNA('es-banos','na-banos')">No aplica</button>
+      </div>
+    </div>
+    <div class="cta-wrap">
+      <button class="btn-back" onclick="go(4)">← Atrás</button>
+      <button class="btn-next" onclick="go(6)">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ══ 6: PATRÓN ══ -->
+  <div class="screen" id="s6">
+    <div class="q-title">¿Cómo suele <em>abastecerse</em> de combustible?</div>
+    <div class="q-sub">Pensando en sus visitas habituales a estaciones Primax.</div>
+    <div class="choice-list">
+      <button class="choice-item" onclick="selectChoice(this,'patron',1)">
+        <span class="choice-num">1</span>Siempre o casi siempre en la misma estación
+      </button>
+      <button class="choice-item" onclick="selectChoice(this,'patron',2)">
+        <span class="choice-num">2</span>En diferentes estaciones Primax
+      </button>
+      <button class="choice-item" onclick="selectChoice(this,'patron',3)">
+        <span class="choice-num">3</span>No estoy seguro / varía mucho
+      </button>
+    </div>
+    <div class="cta-wrap">
+      <button class="btn-back" onclick="go(5)">← Atrás</button>
+      <button class="btn-next" onclick="routeByPattern()">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ══ 7a: MISMA ESTACIÓN — escala palabra (muy inconsistente → muy consistente) ══ -->
+  <div class="screen" id="s7a">
+    <div class="q-title">¿Qué tan <em>consistente</em> es la atención que recibe en sus diferentes visitas a su estación habitual?</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="scale-label-row">1 = Muy inconsistente &nbsp;·&nbsp; 5 = Muy consistente</div>
+      <div class="word-scale" id="ws-consistencia">
+        <button class="word-btn" onclick="selectWord('ws-consistencia',this,1)"><span class="wn">1</span><span class="wl">Muy<br>inconsistente</span></button>
+        <button class="word-btn" onclick="selectWord('ws-consistencia',this,2)"><span class="wn">2</span><span class="wl">Poco<br>consistente</span></button>
+        <button class="word-btn" onclick="selectWord('ws-consistencia',this,3)"><span class="wn">3</span><span class="wl">Regular</span></button>
+        <button class="word-btn" onclick="selectWord('ws-consistencia',this,4)"><span class="wn">4</span><span class="wl">Bastante<br>consistente</span></button>
+        <button class="word-btn" onclick="selectWord('ws-consistencia',this,5)"><span class="wn">5</span><span class="wl">Muy<br>consistente</span></button>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="q-sub" style="font-size:14px">¿Ha notado diferencias según el día, horario o personal que lo atiende?</div>
+      <div class="yesno-row" id="yn-dif">
+        <button class="yn-btn" onclick="selectYN('yn-dif',this,'si','cond-7a')"><span class="yn-emoji">✅</span>Sí</button>
+        <button class="yn-btn" onclick="selectYN('yn-dif',this,'no','cond-7a')"><span class="yn-emoji">❌</span>No</button>
+      </div>
+    </div>
+    <div class="cond-block" id="cond-7a">
+      <div class="sub-item-label" style="font-size:14px;color:var(--text-mid)">¿En qué situaciones ha notado estas diferencias?</div>
+      <textarea class="open-field" placeholder="Ej: los fines de semana, en turno noche, cuando atiende un colaborador específico…" id="txt-7a"></textarea>
+    </div>
+    <div class="cta-wrap">
+      <button class="btn-back" onclick="go(6)">← Atrás</button>
+      <button class="btn-next" onclick="submitSurvey()">Finalizar <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ══ 7b: DIFERENTES ESTACIONES — escala palabra (muy diferente → muy similar) ══ -->
+  <div class="screen" id="s7b">
+    <div class="q-title">¿Qué tan <em>similar</em> es la atención que recibe en las diferentes estaciones Primax que visita?</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="scale-label-row">1 = Muy diferente &nbsp;·&nbsp; 5 = Muy similar</div>
+      <div class="word-scale" id="ws-similar">
+        <button class="word-btn" onclick="selectWord('ws-similar',this,1)"><span class="wn">1</span><span class="wl">Muy<br>diferente</span></button>
+        <button class="word-btn" onclick="selectWord('ws-similar',this,2)"><span class="wn">2</span><span class="wl">Algo<br>diferente</span></button>
+        <button class="word-btn" onclick="selectWord('ws-similar',this,3)"><span class="wn">3</span><span class="wl">Regular</span></button>
+        <button class="word-btn" onclick="selectWord('ws-similar',this,4)"><span class="wn">4</span><span class="wl">Bastante<br>similar</span></button>
+        <button class="word-btn" onclick="selectWord('ws-similar',this,5)"><span class="wn">5</span><span class="wl">Muy<br>similar</span></button>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="q-sub" style="font-size:14px">¿Siente que en algunas estaciones Primax recibe mejor atención que en otras?</div>
+      <div class="yesno-row" id="yn-mejor">
+        <button class="yn-btn" onclick="selectYN('yn-mejor',this,'si','cond-7b')"><span class="yn-emoji">✅</span>Sí</button>
+        <button class="yn-btn" onclick="selectYN('yn-mejor',this,'no','cond-7b')"><span class="yn-emoji">❌</span>No</button>
+      </div>
+    </div>
+    <div class="cond-block" id="cond-7b">
+      <div class="sub-item-label" style="font-size:14px;color:var(--text-mid)">¿Qué hace que esas estaciones sean mejores? Por favor, especifica cuál o cuáles.</div>
+      <textarea class="open-field" placeholder="Ej: La estación de Av. Javier Prado tiene personal más amable y el proceso es más rápido…" id="txt-7b"></textarea>
+    </div>
+    <div class="cta-wrap">
+      <button class="btn-back" onclick="go(6)">← Atrás</button>
+      <button class="btn-next" onclick="submitSurvey()">Finalizar <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ══ 8: NEUTRAL ══ -->
+  <div class="screen" id="s8">
+    <div class="q-title">¡Gracias por tus <em>respuestas</em>!</div>
+    <div class="q-sub">¿Tienes algún comentario adicional? Puedes dejarlo aquí.</div>
+    <textarea id="comentarios-adicionales" class="open-field" style="min-height:100px" placeholder="Comentarios adicionales (opcional)…"></textarea>
+    <div class="cta-wrap">
+      <button class="btn-back" onclick="go(6)">← Atrás</button>
+      <button class="btn-next" onclick="submitSurvey()">Finalizar <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ══ 9: GRACIAS ══ -->
+  <div class="screen" id="s9">
+    <div class="ty-icon">🙌</div>
+    <div class="ty-title">¡Gracias por<br>compartir su<br><em style="font-style:normal;color:var(--orange)">opinión!</em></div>
+    <div class="intro-divider"></div>
+    <div class="ty-sub">Su feedback es fundamental para que Primax siga mejorando la experiencia en cada visita. ¡Nos vemos pronto en nuestra estación de servicio!</div>
+    <div class="ty-badge">
+      <span class="big-emoji">⛽</span>
+      <span>Primax — Siempre en movimiento.<br>Tu confianza, nuestro combustible.</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const TOTAL = 9;
+  let currentScreen = 0;
+  let patternChoice = null;
+  const answers = {};
+  const LABELS = ['Inicio','Exp. General','A. Trato','B. Protocolo','C & D. Seguridad','E. Servicios','Patrón de Visita','Consistencia','—','¡Gracias!'];
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzam8C2VH_gmspFBDZvD96vRTiXgA2Ej9XimlxJJHDFbij7HmJS0oPnTPDLsS_cvuhZxg/exec";
+
+
+  function loadLogo(input) {
+    if (!input.files || !input.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const preview = document.getElementById('logo-preview');
+      const placeholder = document.getElementById('logo-placeholder-txt');
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+      placeholder.style.display = 'none';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+
+  function go(n) {
+    const cur = document.getElementById('s' + currentScreen);
+    if (cur) cur.classList.remove('active');
+    currentScreen = n;
+    const next = document.getElementById('s' + n);
+    if (next) next.classList.add('active');
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function updateProgress() {
+    const idx = (typeof currentScreen === 'number') ? currentScreen : 6;
+    const pct = Math.round((idx / TOTAL) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('step-label').textContent = LABELS[idx] || 'Encuesta';
+  }
+
+  function routeByPattern() {
+    const cur = document.getElementById('s' + currentScreen);
+    if (cur) cur.classList.remove('active');
+    if (patternChoice === 1) {
+      currentScreen = '7a';
+      document.getElementById('s7a').classList.add('active');
+    } else if (patternChoice === 2) {
+      currentScreen = '7b';
+      document.getElementById('s7b').classList.add('active');
+    } else {
+      currentScreen = 8;
+      document.getElementById('s8').classList.add('active');
+    }
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function selectScale(groupId, btn, val) {
+    document.querySelectorAll('#' + groupId + ' .scale-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    answers[groupId] = val;
+  }
+
+function selectEmoji(groupId, btn, val) {
+  document.getElementById(groupId).querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+
+  const naId = 'na-' + groupId.replace('es-','');
+  const naBtn = document.getElementById(naId);
+  if (naBtn) naBtn.classList.remove('selected');
+
+  answers[groupId] = val;
+  answers[naId] = "";
+}
+
+function toggleNA(groupId, naId) {
+  const naBtn = document.getElementById(naId);
+  const isOn = naBtn.classList.contains('selected');
+
+  if (isOn) {
+    naBtn.classList.remove('selected');
+    answers[groupId] = "";
+    answers[naId] = "";
+  } else {
+    document.getElementById(groupId).querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+    naBtn.classList.add('selected');
+    answers[groupId] = "NA";
+    answers[naId] = "NA";
+  }
+}
+
+  function selectChoice(btn, group, val) {
+    document.querySelectorAll('.choice-item').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    answers[group] = val;
+    if (group === 'patron') patternChoice = val;
+  }
+
+  function selectYN(groupId, btn, val, condId) {
+    document.querySelectorAll('#' + groupId + ' .yn-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    answers[groupId] = val;
+    const cond = document.getElementById(condId);
+    if (val === 'si') cond.classList.add('visible');
+    else cond.classList.remove('visible');
+  }
+
+  function selectWord(groupId, btn, val) {
+    document.querySelectorAll('#' + groupId + ' .word-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    answers[groupId] = val;
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+      const screen = document.querySelector('.screen.active');
+      const btn = screen && screen.querySelector('.btn-next');
+      if (btn) btn.click();
+    }
+  });
+function buildPayload() {
+  return {
+    exp_general: answers['scale-general'] || "",
+
+    amabilidad: answers['es-amabilidad'] || "",
+    disposicion: answers['es-disposicion'] || "",
+
+    saludo: answers['es-saludo'] || "",
+    atencion: answers['es-atencion'] || "",
+    despedida: answers['es-despedida'] || "",
+    imagen: answers['es-imagen'] || "",
+
+    confianza: answers['es-confianza'] || "",
+    seguridad: answers['es-seguridad'] || "",
+    fluidez: answers['es-fluidez'] || "",
+    disponibilidad_colaborador: answers['es-disponib'] || "",
+
+    disp_servicios: answers['es-disp-serv'] || "",
+    calidad_servicios: answers['es-calidad-serv'] || "",
+    banos: answers['es-banos'] || "",
+
+    patron: answers['patron'] || "",
+
+    consistencia: answers['ws-consistencia'] || "",
+    nota_diferencias: document.getElementById('txt-7a')?.value?.trim() || "",
+
+    similaridad: answers['ws-similar'] || "",
+    estaciones_mejores: document.getElementById('txt-7b')?.value?.trim() || "",
+
+    comentarios_adicionales: document.getElementById('comentarios-adicionales')?.value?.trim() || ""
+  };
+}
+
+async function submitSurvey() {
+  const payload = buildPayload();
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify(payload),
+      mode: "no-cors"
+    });
+
+    go(9);
+
+  } catch (error) {
+    alert("Error al enviar la encuesta: " + error.message);
+    console.error(error);
+  }
+}
+
+updateProgress();
+</script>
+</body>
+</html>
