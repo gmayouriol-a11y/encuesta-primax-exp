@@ -87,12 +87,11 @@
    gap: 12px;
  }
 
- /* Esta es la nueva regla que controla tu logo de Primax */
  .primax-logo-img {
-   height: 32px;      /* Esto hace que deje de ser gigante */
-   width: auto;       /* Mantiene la forma original sin deformar */
+   height: 32px;
+   width: auto;
    display: block;
-   image-rendering: -webkit-optimize-contrast; /* Para que se vea súper nítido */
+   image-rendering: -webkit-optimize-contrast;
  }
 
   .step-pill {
@@ -465,8 +464,7 @@
 
 <nav>
   <div class="logo-slot">
-    <img src="https://primaxleed.com.pe/img/slider/logoprimax.png
-  " alt="Logo Primax" class="primax-logo-img">
+    <img src="https://primaxleed.com.pe/img/slider/logoprimax.png" alt="Logo Primax" class="primax-logo-img">
   </div>
   <div class="step-pill" id="step-label">Encuesta de Experiencia</div>
 </nav>
@@ -475,49 +473,21 @@
 
 <div id="survey-wrap">
 
-  <!-- ══ 0: INTRO ══ -->
-<div class="screen active" id="s0">
-    <div class="intro-title">En <em>Primax</em>,<br>Tu experiencia <br><em>importa</em>.</div>
-    <div class="intro-divider"></div>
-    <div class="intro-desc">Queremos mejorar tu experiencia en nuestras estaciones. ¡Completa esta encuesta y participa por una Giftcard de S/250!</div>    
-    
-    <div class="user-data-form" style="margin: 20px 0; display: flex; flex-direction: column; gap: 12px;">
-        <div class="intro-desc">Por favor, bríndanos tus datos aquí:</div>    
-
-        <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">      
-        <input type="text" id="dni" name="dni" placeholder="Número de DNI" maxlength="8" pattern="\d{8}" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">      
-        <input type="tel" id="celular" name="celular" placeholder="Número de celular" maxlength="9" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
-        <input type="email" id="email" name="email" placeholder="Correo electrónico" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
-        
-        <div class="intro-desc" style="font-size: 0.9em; margin-top: 10px; color: #555;">
-            Por favor marque los dos casilleros para confirmar su autorización de datos y el conocimiento de los términos y condiciones del sorteo.
-        </div>
-
-        <div class="terms-container" style="display: flex; flex-direction: column; gap: 10px; text-align: left; font-size: 0.85em;">
-            <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
-                <input type="checkbox" id="check-datos" required style="margin-top: 3px;">
-                <span>Autorizo el uso de mis datos personales según la 
-                    <a href="https://primax.com.pe/wp-content/uploads/2023/02/Politica-de-Privacidad-y-Uso-de-Cookies-de-los-canales-de-atencion-al-cliente.pdf" target="_blank" style="color: #0056b3; text-decoration: underline;">Política de Privacidad</a>.
-                </span>
-            </label>
-            <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
-                <input type="checkbox" id="check-terminos" required style="margin-top: 3px;">
-                <span>Acepto los <a href="https://docs.google.com/document/d/1LGtWs-e0enM1Zt2IhBd0-5tE31EMZFVHvvA2_LUWwQo/edit?usp=sharing" target="_blank" style="color: #0056b3; text-decoration: underline;">términos y condiciones</a> del sorteo de la Giftcard de S/250.</span>
-            </label>
-        </div>
-    </div>
-
-    <div class="cta-wrap">
-        <button class="btn-next" onclick="validarYContinuar()">Comenzar 
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </button>
-    </div>
-</div>
+  <div class="screen active" id="s0">
+      <div class="intro-title">En <em>Primax</em>,<br>Tu experiencia <br><em>importa</em>.</div>
+      <div class="intro-divider"></div>
+      <div class="intro-desc">Queremos mejorar tu experiencia en nuestras estaciones. ¡Completa esta encuesta y participa por una Giftcard de S/250!</div>    
+      
+      <div class="cta-wrap">
+          <button class="btn-next" onclick="go(1)">Comenzar 
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+          </button>
+      </div>
+  </div>
 
 
-  <!-- ══ 1: EXP GENERAL ══ -->
   <div class="screen" id="s1">
     <div class="q-title">¿Cómo calificaría su <em>última visita</em> a Primax?</div>
     <div class="q-sub">Considerando su experiencia completa en la estación de servicio.</div>
@@ -534,7 +504,6 @@
     </div>
   </div>
 
-  <!-- ══ 2: TRATO ══ -->
   <div class="screen" id="s2">
     <div class="q-title">¿Cómo fue el <em>trato</em> del colaborador que le atendió?</div>
     <div class="section-card">
@@ -566,7 +535,6 @@
     </div>
   </div>
 
-  <!-- ══ 3: PROTOCOLO ══ -->
   <div class="screen" id="s3">
     <div class="q-title">Evalúe nuestro <em>protocolo</em> de atención</div>
     <div class="section-card">
@@ -618,7 +586,6 @@
     </div>
   </div>
 
-  <!-- ══ 4: SEGURIDAD + EFICIENCIA ══ -->
   <div class="screen" id="s4">
     <div class="q-title"><em>Seguridad</em> y <em>eficiencia</em> del servicio</div>
     <div class="section-card">
@@ -673,7 +640,6 @@
     </div>
   </div>
 
-  <!-- ══ 5: SERVICIOS COMP ══ -->
   <div class="screen" id="s5">
     <div class="q-title">¿Cómo valora los <em>servicios adicionales</em> que brinda Primax?</div>
     <div class="q-sub">Si no usó algún servicio, marca "No aplica".</div>
@@ -719,7 +685,6 @@
     </div>
   </div>
 
-  <!-- ══ 6: PATRÓN ══ -->
   <div class="screen" id="s6">
     <div class="q-title">¿Cómo suele <em>abastecerse</em> de combustible?</div>
     <div class="q-sub">Pensando en sus visitas habituales a estaciones Primax.</div>
@@ -740,7 +705,6 @@
     </div>
   </div>
 
-  <!-- ══ 7a: MISMA ESTACIÓN — escala palabra (muy inconsistente → muy consistente) ══ -->
   <div class="screen" id="s7a">
     <div class="q-title">¿Qué tan <em>consistente</em> es la atención que recibe en sus diferentes visitas a su estación habitual?</div>
     <div style="display:flex;flex-direction:column;gap:10px">
@@ -766,11 +730,10 @@
     </div>
     <div class="cta-wrap">
       <button class="btn-back" onclick="go(6)">← Atrás</button>
-      <button class="btn-next" onclick="submitSurvey()">Finalizar <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="btn-next" onclick="goToDatos('7a')">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
   </div>
 
-  <!-- ══ 7b: DIFERENTES ESTACIONES — escala palabra (muy diferente → muy similar) ══ -->
   <div class="screen" id="s7b">
     <div class="q-title">¿Qué tan <em>similar</em> es la atención que recibe en las diferentes estaciones Primax que visita?</div>
     <div style="display:flex;flex-direction:column;gap:10px">
@@ -796,25 +759,61 @@
     </div>
     <div class="cta-wrap">
       <button class="btn-back" onclick="go(6)">← Atrás</button>
-      <button class="btn-next" onclick="submitSurvey()">Finalizar <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="btn-next" onclick="goToDatos('7b')">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
   </div>
 
-  <!-- ══ 8: NEUTRAL ══ -->
   <div class="screen" id="s8">
     <div class="q-title">¡Gracias por tus <em>respuestas</em>!</div>
     <div class="q-sub">¿Tienes algún comentario adicional? Puedes dejarlo aquí.</div>
     <textarea id="comentarios-adicionales" class="open-field" style="min-height:100px" placeholder="Comentarios adicionales (opcional)…"></textarea>
     <div class="cta-wrap">
       <button class="btn-back" onclick="go(6)">← Atrás</button>
-      <button class="btn-next" onclick="submitSurvey()">Finalizar <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="btn-next" onclick="goToDatos('8')">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
   </div>
 
-  <!-- ══ 9: GRACIAS ══ -->
+  <div class="screen" id="s_datos">
+      <div class="q-title">¡Casi <em>terminamos</em>!</div>
+      <div class="q-sub">Déjanos tus datos para participar por la Giftcard de S/250.</div>
+
+      <div class="user-data-form" style="display: flex; flex-direction: column; gap: 12px;">
+          <input type="text" id="dni" name="dni" placeholder="Número de DNI" maxlength="8" pattern="\d{8}" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">      
+          <input type="tel" id="celular" name="celular" placeholder="Número de celular" maxlength="9" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+          
+          <div class="intro-desc" style="font-size: 0.9em; margin-top: 10px; color: #555;">
+              Por favor marque los dos casilleros para confirmar su autorización de datos y el conocimiento de los términos y condiciones del sorteo.
+          </div>
+
+          <div class="terms-container" style="display: flex; flex-direction: column; gap: 10px; text-align: left; font-size: 0.85em;">
+              <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+                  <input type="checkbox" id="check-datos" required style="margin-top: 3px;">
+                  <span>Autorizo el uso de mis datos personales según la 
+                      <a href="https://primax.com.pe/wp-content/uploads/2023/02/Politica-de-Privacidad-y-Uso-de-Cookies-de-los-canales-de-atencion-al-cliente.pdf" target="_blank" style="color: #0056b3; text-decoration: underline;">Política de Privacidad</a>.
+                  </span>
+              </label>
+              <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+                  <input type="checkbox" id="check-terminos" required style="margin-top: 3px;">
+                  <span>Acepto los <a href="https://docs.google.com/document/d/1LGtWs-e0enM1Zt2IhBd0-5tE31EMZFVHvvA2_LUWwQo/edit?usp=sharing" target="_blank" style="color: #0056b3; text-decoration: underline;">términos y condiciones</a> del sorteo de la Giftcard de S/250.</span>
+              </label>
+          </div>
+      </div>
+
+      <div class="cta-wrap">
+          <button class="btn-back" onclick="goBackFromDatos()">← Atrás</button>
+          <button class="btn-next" onclick="validarYEnviar()">Finalizar 
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+          </button>
+      </div>
+  </div>
+
   <div class="screen" id="s9">
-    <div class="ty-title">¡Gracias por<br>compartir tu<br><em style="font-style:normal;color:var(--orange)">opinión!</em></div>
-    <div class="intro-divider"></div>
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <div class="ty-title">¡Gracias por<br>compartir tu<br><em style="font-style:normal;color:var(--orange)">opinión!</em></div>
+      <div class="intro-divider" style="margin: 0;"></div>
+      <div class="ty-sub" style="font-size: 15px; margin-top: 0; max-width: 100%;">Con esto ya estás participando en el sorteo de una gift card. ¡Mucha suerte!</div>
     </div>
   </div>
 
@@ -824,26 +823,12 @@
   const TOTAL = 9;
   let currentScreen = 0;
   let patternChoice = null;
+  let previousScreenBeforeDatos = null; // Variable para saber a dónde regresar
   const answers = {};
   const LABELS = ['Inicio','Nombre','DNI','Celular','Email','Exp. General','A. Trato','B. Protocolo','C & D. Seguridad','E. Servicios','Patrón de Visita','Consistencia','—','¡Gracias!'];
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzam8C2VH_gmspFBDZvD96vRTiXgA2Ej9XimlxJJHDFbij7HmJS0oPnTPDLsS_cvuhZxg/exec";
 
-
-  function loadLogo(input) {
-    if (!input.files || !input.files[0]) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      const preview = document.getElementById('logo-preview');
-      const placeholder = document.getElementById('logo-placeholder-txt');
-      preview.src = e.target.result;
-      preview.style.display = 'block';
-      placeholder.style.display = 'none';
-    };
-    reader.readAsDataURL(input.files[0]);
-  }
-
 function go(n) {
-  // Solo validamos si el usuario intenta AVANZAR (n > currentScreen)
   if (n > currentScreen) {
     if (!validateCurrentStep()) {
       alert("Por favor, selecciona una opción para continuar.");
@@ -862,15 +847,39 @@ function go(n) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// Nueva función para ir a la pantalla de datos desde 7a, 7b u 8
+function goToDatos(fromScreen) {
+  // Validamos la pantalla actual antes de avanzar
+  if (fromScreen === '7a' && (!answers['ws-consistencia'] || !answers['yn-dif'])) {
+      alert("Por favor, selecciona una opción para continuar.");
+      return;
+  }
+  if (fromScreen === '7b' && (!answers['ws-similar'] || !answers['yn-mejor'])) {
+      alert("Por favor, selecciona una opción para continuar.");
+      return;
+  }
+
+  previousScreenBeforeDatos = fromScreen;
+  
+  const cur = document.getElementById('s' + fromScreen);
+  if (cur) cur.classList.remove('active');
+  
+  currentScreen = 'datos';
+  document.getElementById('s_datos').classList.add('active');
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Nueva función para regresar a la pantalla correcta desde los datos
+function goBackFromDatos() {
+  document.getElementById('s_datos').classList.remove('active');
+  currentScreen = previousScreenBeforeDatos;
+  document.getElementById('s' + previousScreenBeforeDatos).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function validateCurrentStep() {
   switch (currentScreen) {
-    case 0: // Pantalla de datos personales
-      const nom = document.getElementById('nombre').value.trim();
-      const dni = document.getElementById('dni').value.trim();
-      const cel = document.getElementById('celular').value.trim();
-      const mail = document.getElementById('email').value.trim();
-      return (nom !== "" && dni.length >= 8 && cel.length >= 9 && mail.includes('@'));
-
     case 1: // Experiencia General
       return !!answers['scale-general'];
 
@@ -886,32 +895,27 @@ function validateCurrentStep() {
               !!answers['es-fluidez'] && !!answers['es-disponib']);
 
     case 5: // Servicios adicionales (3 sub-items con opción NA)
-      // Aquí validamos que hayan marcado algo O que hayan marcado el botón NA
       return (!!answers['es-disp-serv'] && !!answers['es-calidad-serv'] && !!answers['es-banos']);
 
     case 6: // Patrón de carga
       return !!answers['patron'];
-
-    case '7a': // Consistencia
-      return !!answers['ws-consistencia'] && !!answers['yn-dif'];
-
-    case '7b': // Similaridad
-      return !!answers['ws-similar'] && !!answers['yn-mejor'];
 
     default:
       return true;
   }
 }
 
-function validarYContinuar() {
+// Nueva función que valida los datos finales y envía la encuesta
+function validarYEnviar() {
     const checkDatos = document.getElementById('check-datos').checked;
     const checkTerminos = document.getElementById('check-terminos').checked;
-    const nombre = document.getElementById('nombre').value;
+    const dni = document.getElementById('dni').value.trim();
+    const cel = document.getElementById('celular').value.trim();
 
-    if (nombre && checkDatos && checkTerminos) {
-        go(1);
+    if (dni.length >= 8 && cel.length >= 9 && checkDatos && checkTerminos) {
+        submitSurvey();
     } else {
-        alert("Por favor, complete sus datos y acepte ambos casilleros para continuar.");
+        alert("Por favor, complete su DNI, celular y acepte ambos casilleros para finalizar.");
     }
 }
 
@@ -932,7 +936,7 @@ function validarYContinuar() {
       currentScreen = '7b';
       document.getElementById('s7b').classList.add('active');
     } else {
-      currentScreen = 8;
+      currentScreen = '8';
       document.getElementById('s8').classList.add('active');
     }
     updateProgress();
@@ -995,22 +999,10 @@ function toggleNA(groupId, naId) {
     answers[groupId] = val;
   }
 
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-      const screen = document.querySelector('.screen.active');
-      const btn = screen && screen.querySelector('.btn-next');
-      if (btn) btn.click();
-    }
-  });
 function buildPayload() {
   return {
-    // Captura directa de los inputs de texto del inicio
-    nombre: document.getElementById('nombre').value.trim(),
     dni: document.getElementById('dni').value.trim(),
     celular: document.getElementById('celular').value.trim(),
-    email: document.getElementById('email').value.trim(),
-
-    // Captura de las escalas (estas sí están en el objeto answers)
     exp_general: answers['scale-general'] || "",
     amabilidad: answers['es-amabilidad'] || "",
     disposicion: answers['es-disposicion'] || "",
@@ -1043,7 +1035,11 @@ async function submitSurvey() {
       mode: "no-cors"
     });
 
-    go(9);
+    // Ocultar la pantalla de datos y mostrar la pantalla de agradecimiento
+    document.getElementById('s_datos').classList.remove('active');
+    currentScreen = 9;
+    document.getElementById('s9').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
   } catch (error) {
     alert("Error al enviar la encuesta: " + error.message);
