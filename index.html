@@ -466,7 +466,7 @@
   <div class="logo-slot">
     <img src="https://primaxleed.com.pe/img/slider/logoprimax.png" alt="Logo Primax" class="primax-logo-img">
   </div>
-  <div class="step-pill" id="step-label">Encuesta de Experiencia</div>
+  <div class="step-pill" id="step-label">Inicio</div>
 </nav>
   
 <div id="progress-bar-wrap"><div id="progress-fill"></div></div>
@@ -820,12 +820,43 @@
 </div>
 
 <script>
-  const TOTAL = 9;
   let currentScreen = 0;
   let patternChoice = null;
-  let previousScreenBeforeDatos = null; // Variable para saber a dónde regresar
+  let previousScreenBeforeDatos = null; 
   const answers = {};
-  const LABELS = ['Inicio','Nombre','DNI','Celular','Email','Exp. General','A. Trato','B. Protocolo','C & D. Seguridad','E. Servicios','Patrón de Visita','Consistencia','—','¡Gracias!'];
+
+  // Diccionario para asignar el título correcto a cada pantalla en el botón superior
+  const LABELS = {
+    0: 'Inicio',
+    1: 'Exp. General',
+    2: 'A. Trato',
+    3: 'B. Protocolo',
+    4: 'C & D. Seguridad',
+    5: 'E. Servicios',
+    6: 'Patrón de Visita',
+    '7a': 'Consistencia',
+    '7b': 'Similaridad',
+    '8': 'Comentarios',
+    'datos': 'Datos Personales',
+    9: '¡Gracias!'
+  };
+
+  // Diccionario numérico lógico para que la barra de progreso avance correctamente
+  const PROGRESS_STEPS = {
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    '7a': 7,
+    '7b': 7,
+    '8': 7,
+    'datos': 8,
+    9: 9
+  };
+
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzam8C2VH_gmspFBDZvD96vRTiXgA2Ej9XimlxJJHDFbij7HmJS0oPnTPDLsS_cvuhZxg/exec";
 
 function go(n) {
@@ -847,9 +878,7 @@ function go(n) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Nueva función para ir a la pantalla de datos desde 7a, 7b u 8
 function goToDatos(fromScreen) {
-  // Validamos la pantalla actual antes de avanzar
   if (fromScreen === '7a' && (!answers['ws-consistencia'] || !answers['yn-dif'])) {
       alert("Por favor, selecciona una opción para continuar.");
       return;
@@ -867,45 +896,40 @@ function goToDatos(fromScreen) {
   currentScreen = 'datos';
   document.getElementById('s_datos').classList.add('active');
   
+  updateProgress();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Nueva función para regresar a la pantalla correcta desde los datos
 function goBackFromDatos() {
   document.getElementById('s_datos').classList.remove('active');
   currentScreen = previousScreenBeforeDatos;
   document.getElementById('s' + previousScreenBeforeDatos).classList.add('active');
+  
+  updateProgress();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function validateCurrentStep() {
   switch (currentScreen) {
-    case 1: // Experiencia General
+    case 1: 
       return !!answers['scale-general'];
-
-    case 2: // Trato (Amabilidad y Disposición)
+    case 2: 
       return (!!answers['es-amabilidad'] && !!answers['es-disposicion']);
-
-    case 3: // Protocolo (4 sub-items)
+    case 3: 
       return (!!answers['es-saludo'] && !!answers['es-atencion'] && 
               !!answers['es-despedida'] && !!answers['es-imagen']);
-
-    case 4: // Seguridad y Eficiencia (4 sub-items)
+    case 4: 
       return (!!answers['es-confianza'] && !!answers['es-seguridad'] && 
               !!answers['es-fluidez'] && !!answers['es-disponib']);
-
-    case 5: // Servicios adicionales (3 sub-items con opción NA)
+    case 5: 
       return (!!answers['es-disp-serv'] && !!answers['es-calidad-serv'] && !!answers['es-banos']);
-
-    case 6: // Patrón de carga
+    case 6: 
       return !!answers['patron'];
-
     default:
       return true;
   }
 }
 
-// Nueva función que valida los datos finales y envía la encuesta
 function validarYEnviar() {
     const checkDatos = document.getElementById('check-datos').checked;
     const checkTerminos = document.getElementById('check-terminos').checked;
@@ -920,10 +944,12 @@ function validarYEnviar() {
 }
 
   function updateProgress() {
-    const idx = (typeof currentScreen === 'number') ? currentScreen : 6;
-    const pct = Math.round((idx / TOTAL) * 100);
+    // Calculamos el porcentaje usando la tabla de progreso lógica (de 0 a 9 pasos)
+    const stepNum = PROGRESS_STEPS[currentScreen] !== undefined ? PROGRESS_STEPS[currentScreen] : 0;
+    const pct = Math.round((stepNum / 9) * 100);
+    
     document.getElementById('progress-fill').style.width = pct + '%';
-    document.getElementById('step-label').textContent = LABELS[idx] || 'Encuesta';
+    document.getElementById('step-label').textContent = LABELS[currentScreen] || 'Encuesta';
   }
 
   function routeByPattern() {
@@ -1039,6 +1065,7 @@ async function submitSurvey() {
     document.getElementById('s_datos').classList.remove('active');
     currentScreen = 9;
     document.getElementById('s9').classList.add('active');
+    updateProgress();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
   } catch (error) {
